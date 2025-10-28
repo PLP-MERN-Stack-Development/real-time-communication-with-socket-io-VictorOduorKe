@@ -40,7 +40,7 @@ export default function Sidebar({ onSelectChat, onSidebarToggle }) {
       setChats(chatsRes.data || [])
       setUsers((usersRes.data || []).filter(u => String(u._id) !== String(userData.id)))
     } catch (err) {
-      console.error('Failed to load data:', err)
+     // console.error('Failed to load data:', err)
       if (err.response?.status === 401 && err.response?.data?.message === 'Invalid token') {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
@@ -128,7 +128,7 @@ export default function Sidebar({ onSelectChat, onSidebarToggle }) {
       const res = await fetchUsers()
       setUsers(res.data.filter(u => String(u._id) !== String(userData.id)))
     } catch (err) {
-      console.error('Failed to fetch users:', err)
+    // console.error('Failed to fetch users:', err)
       if (err.response?.status === 401) {
         navigate('/login', { replace: true })
       }
@@ -157,7 +157,7 @@ export default function Sidebar({ onSelectChat, onSidebarToggle }) {
       await loadData()
       onSelectChat(res.data)
     } catch (err) {
-      console.error(err)
+      //console.error(err)
       alert(err.response?.data?.message || err.message)
     }
   }, [isGroup, name, selected, loadData, onSelectChat])
@@ -185,7 +185,7 @@ export default function Sidebar({ onSelectChat, onSidebarToggle }) {
       setAvatarFile(null)
       setBio('')
     } catch (err) {
-      console.error(err)
+     // console.error(err)
       alert(err.response?.data?.message || err.message)
     }
   }, [avatarFile, bio]);
@@ -372,7 +372,7 @@ export default function Sidebar({ onSelectChat, onSidebarToggle }) {
                         await loadData()
                         onSelectChat(res.data)
                       } catch (err) {
-                        console.error(err)
+                        //console.error(err)
                       }
                     }}
                   >
@@ -411,7 +411,7 @@ export default function Sidebar({ onSelectChat, onSidebarToggle }) {
                         await loadData()
                         onSelectChat(res.data)
                       } catch (err) {
-                        console.error(err)
+                        //console.error(err)
                       }
                     }}
                   >

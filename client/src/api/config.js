@@ -5,7 +5,7 @@ export const fetchFeatureFlags = async () => {
     const { data } = await axios.get('/config')
     return data
   } catch (err) {
-    console.warn('Failed to fetch feature flags:', err)
+   // console.warn('Failed to fetch feature flags:', err)
     return { enableGpt5Mini: false } // safe default
   }
 }

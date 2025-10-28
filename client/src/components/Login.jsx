@@ -24,7 +24,7 @@ export default function Login() {
       setUser(user)
       navigate('/chat', { replace: true })
     } catch (err) {
-      console.error('Auth error:', err)
+      //console.error('Auth error:', err)
       setError(err.response?.data?.message || 'Failed to authenticate. Please try again.')
     } finally {
       setIsLoading(false)

@@ -191,7 +191,7 @@ export default function ChatRoom() {
         })
       }
     } catch (err) {
-      console.error(err)
+      //console.error(err)
       setError('Failed to load messages. Please try again.')
     } finally {
       setIsFetchingMessages(false)
@@ -387,7 +387,7 @@ export default function ChatRoom() {
                                   alt={`attachment-${idx}`} 
                                   className="max-h-80 w-auto rounded-xl object-cover shadow-lg border border-slate-600/50" 
                                   onError={(e) => {
-                                    console.error('Image load error:', url);
+                                    //console.error('Image load error:', url);
                                     e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iMTIiIHk9IjEyIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+P'
                                   }}
                                 />

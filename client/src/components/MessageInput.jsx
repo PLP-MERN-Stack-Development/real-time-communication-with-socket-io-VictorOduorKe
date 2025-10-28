@@ -38,7 +38,7 @@ export default function MessageInput({ chatId, onSent }) {
         // store only the URL string to match Message.attachments schema (array of strings)
         if (up?.data?.url) attachments.push(up.data.url)
       } catch (err) {
-        console.error('File upload failed', err)
+        //console.error('File upload failed', err)
         setError('File upload failed. Try again.')
         setIsSending(false)
         return
@@ -66,7 +66,7 @@ export default function MessageInput({ chatId, onSent }) {
           }
         } catch (e) {}
       } catch (err) {
-        console.error('Socket send error', err)
+       // console.error('Socket send error', err)
         setError('Failed to send message. Please try again.')
       }
       setIsSending(false)
@@ -80,7 +80,7 @@ export default function MessageInput({ chatId, onSent }) {
       setFile(null)
       if (onSent) onSent(res.data)
     } catch (err) {
-      console.error(err)
+      //console.error(err)
       setError('Failed to send message. Please try again.')
     }
     setIsSending(false)
