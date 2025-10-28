@@ -22,14 +22,14 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: process.env.CLIENT_URL || 'https://real-time-communications.netlify.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   },
 });
 
 // middlewares
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: process.env.CLIENT_URL || 'https://real-time-communications.netlify.app', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
