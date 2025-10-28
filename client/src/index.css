@@ -1,0 +1,21 @@
+@import "tailwindcss/preflight";
+@import "tailwindcss";
+
+html, body, #root {
+  height: 100%;
+}
+
+.message-input {
+  padding: 1rem;
+  border-top-width: 1px;
+  border-color: rgb(229 231 235);
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.messages-container {
+  flex: 1 1 0%;
+  overflow-y: auto;
+  padding: 1rem;
+}

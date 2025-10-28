@@ -1,132 +1,85 @@
-// server.js - Main server file for Socket.io chat application
-
+// server.js - Main server setup (Express + Socket.io + routes + DB)
 const express = require('express');
 const http = require('http');
-const { Server } = require('socket.io');
 const cors = require('cors');
-const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 
-// Load environment variables
-dotenv.config();
 
-// Initialize Express app
+const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+const userRoutes = require('./routes/userRoutes');
+const errorMiddleware = require('./middleware/errorMiddleware');
+const { initSocket } = require('./socket/socketHandler');
+const dotenv = require('dotenv');
+dotenv.config();
 const app = express();
 const server = http.createServer(app);
+
+// Initialize Socket.io
+const { Server } = require('socket.io');
 const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   },
 });
 
-// Middleware
-app.use(cors());
+// middlewares
+app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Store connected users and messages
-const users = {};
-const messages = [];
-const typingUsers = {};
+// Debug middleware for file requests
+app.use((req, res, next) => {
+  if (req.url.startsWith('/uploads') || req.url.startsWith('/api/uploads')) {
+    console.log('File request:', req.url);
+  }
+  next();
+});
 
-// Socket.io connection handler
-io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
+// serve uploaded files
+const uploadsPath = path.join(__dirname, 'uploads');
+console.log('Serving uploads from:', uploadsPath);
+app.use('/uploads', express.static(uploadsPath));
+app.use('/api/uploads', express.static(uploadsPath));
 
-  // Handle user joining
-  socket.on('user_join', (username) => {
-    users[socket.id] = { username, id: socket.id };
-    io.emit('user_list', Object.values(users));
-    io.emit('user_joined', { username, id: socket.id });
-    console.log(`${username} joined the chat`);
-  });
+// mount upload route
+const uploadRoutes = require('./routes/uploadRoutes')
+app.use('/api/uploads', uploadRoutes)
 
-  // Handle chat messages
-  socket.on('send_message', (messageData) => {
-    const message = {
-      ...messageData,
-      id: Date.now(),
-      sender: users[socket.id]?.username || 'Anonymous',
-      senderId: socket.id,
-      timestamp: new Date().toISOString(),
-    };
-    
-    messages.push(message);
-    
-    // Limit stored messages to prevent memory issues
-    if (messages.length > 100) {
-      messages.shift();
-    }
-    
-    io.emit('receive_message', message);
-  });
+// routes
+app.use('/api/auth', authRoutes);
+app.use('/api/chats', chatRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/users', userRoutes);
 
-  // Handle typing indicator
-  socket.on('typing', (isTyping) => {
-    if (users[socket.id]) {
-      const username = users[socket.id].username;
-      
-      if (isTyping) {
-        typingUsers[socket.id] = username;
-      } else {
-        delete typingUsers[socket.id];
-      }
-      
-      io.emit('typing_users', Object.values(typingUsers));
-    }
-  });
-
-  // Handle private messages
-  socket.on('private_message', ({ to, message }) => {
-    const messageData = {
-      id: Date.now(),
-      sender: users[socket.id]?.username || 'Anonymous',
-      senderId: socket.id,
-      message,
-      timestamp: new Date().toISOString(),
-      isPrivate: true,
-    };
-    
-    socket.to(to).emit('private_message', messageData);
-    socket.emit('private_message', messageData);
-  });
-
-  // Handle disconnection
-  socket.on('disconnect', () => {
-    if (users[socket.id]) {
-      const { username } = users[socket.id];
-      io.emit('user_left', { username, id: socket.id });
-      console.log(`${username} left the chat`);
-    }
-    
-    delete users[socket.id];
-    delete typingUsers[socket.id];
-    
-    io.emit('user_list', Object.values(users));
-    io.emit('typing_users', Object.values(typingUsers));
+// expose runtime feature flags to clients
+app.get('/api/config', (req, res) => {
+  res.json({
+    enableGpt5Mini: String(process.env.ENABLE_GPT5_MINI || '').toLowerCase() === 'true',
   });
 });
 
-// API routes
-app.get('/api/messages', (req, res) => {
-  res.json(messages);
-});
+app.get('/', (req, res) => res.send('Realtime Chat Server is running'));
 
-app.get('/api/users', (req, res) => {
-  res.json(Object.values(users));
-});
+// error handler
+app.use(errorMiddleware);
 
-// Root route
-app.get('/', (req, res) => {
-  res.send('Socket.io Chat Server is running');
-});
-
-// Start server
+// connect db and start server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+
+connectDB().then(() => {
+  // initialize socket handlers
+  initSocket(io);
+
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
 
-module.exports = { app, server, io }; 
+module.exports = { app, server, io };
