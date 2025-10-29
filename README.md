@@ -215,6 +215,9 @@ Frontend (Netlify):
 - Build command: `npm run build` (or `yarn build`)
 - Publish directory: `dist`
 
+ # visit live site
+ [Visit here](https://real-time-communications.netlify.app/chat)
+
 Backend (Render):
 - Create a Web Service on Render, connect repo, set `server/` as the service directory or the start command to `node server/server.js` depending on how you structure repo in Render.
 - Set environment variables in Render dashboard (MONGO_URI, JWT_SECRET, CLIENT_URL set to Netlify URL, etc.)
