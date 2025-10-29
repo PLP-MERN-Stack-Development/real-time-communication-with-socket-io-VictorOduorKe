@@ -134,7 +134,7 @@ export default function MessageInput({ chatId, onSent }) {
   }
 
   return (
-    <form onSubmit={send} className="message-input px-4 py-3 bg-gradient-to-b from-slate-700 to-slate-800 border-t border-slate-600">
+    <form onSubmit={send} className="message-input px-4 py-3 bg-linear-to-b from-slate-700 to-slate-800 border-t border-slate-600">
       {error && (
         <div className="mb-3 bg-red-500/10 border border-red-500/20 text-red-300 px-4 py-2 rounded-xl text-sm backdrop-blur-sm">
           {error}
@@ -161,7 +161,7 @@ export default function MessageInput({ chatId, onSent }) {
 
       <div className="flex items-end gap-2">
         {/* File Upload Button */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <label className={clsx(
             "inline-flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 cursor-pointer border-2 border-dashed",
             file 
@@ -220,7 +220,7 @@ export default function MessageInput({ chatId, onSent }) {
               ? "bg-teal-400 cursor-not-allowed" 
               : (!text.trim() && !file)
                 ? "bg-slate-600 text-slate-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 hover:shadow-xl active:scale-95"
+                : "bg-linear-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 hover:shadow-xl active:scale-95"
           )}
         >
           {isSending ? (

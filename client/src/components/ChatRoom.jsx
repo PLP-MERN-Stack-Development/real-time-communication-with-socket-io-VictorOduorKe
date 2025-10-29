@@ -204,7 +204,7 @@ export default function ChatRoom() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="h-screen flex flex-col bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
       <NavBar />
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar with toggle functionality */}
@@ -226,7 +226,7 @@ export default function ChatRoom() {
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-300 px-4 py-3 m-4 rounded-xl backdrop-blur-sm">
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>{error}</span>
@@ -252,7 +252,7 @@ export default function ChatRoom() {
                 {sidebarCollapsed && (
                   <button
                     onClick={() => setSidebarCollapsed(false)}
-                    className="px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
+                    className="px-6 py-3 bg-linear-to-r from-teal-500 to-teal-600 text-white rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
                   >
                     Show Conversations
                   </button>
@@ -357,7 +357,7 @@ export default function ChatRoom() {
                       <div className={clsx(
                         'max-w-[70%] px-6 py-4 rounded-2xl shadow-lg backdrop-blur-sm border',
                         isMine 
-                          ? 'bg-gradient-to-br from-teal-500 to-teal-600 text-white border-teal-400/20 rounded-tr-md' 
+                          ? 'bg-linear-to-br from-teal-500 to-teal-600 text-white border-teal-400/20 rounded-tr-md' 
                           : 'bg-slate-700/80 text-slate-100 border-slate-600/50 rounded-tl-md',
                         isSameSender && isConsecutive ? (isMine ? 'rounded-br-2xl' : 'rounded-bl-2xl') : 'rounded-2xl'
                       )}>
@@ -367,7 +367,7 @@ export default function ChatRoom() {
                         )}
                         
                         {/* Message content */}
-                        <div className="whitespace-pre-wrap break-words leading-relaxed text-[15px]">
+                        <div className="whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
                           {m.content}
                         </div>
                         
@@ -453,7 +453,7 @@ export default function ChatRoom() {
                     {activeChat.users.map((u) => (
                       <div key={u._id} className="flex items-center gap-3 p-3 bg-slate-700/50 rounded-xl border border-slate-600/50 hover:border-slate-500/50 transition-colors">
                         <div className="relative">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 overflow-hidden flex items-center justify-center text-white font-semibold shadow-lg">
+                          <div className="w-12 h-12 rounded-xl bg-linear-to-br from-teal-500 to-teal-600 overflow-hidden flex items-center justify-center text-white font-semibold shadow-lg">
                             {u.avatar ? (
                               <img 
               src={u.avatar} 

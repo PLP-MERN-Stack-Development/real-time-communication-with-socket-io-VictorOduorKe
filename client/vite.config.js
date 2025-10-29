@@ -11,4 +11,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Base URL configuration
+  base: '/',
+  // Server configuration
+  server: {
+    historyApiFallback: true,
+  },
 })

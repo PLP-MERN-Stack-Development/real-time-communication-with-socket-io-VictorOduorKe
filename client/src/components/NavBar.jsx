@@ -1,10 +1,30 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function NavBar() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const mobileMenuRef = useRef(null)
+
+  // close mobile menu when clicking outside or on escape
+  useEffect(() => {
+    const onDocClick = (e) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        setIsMobileOpen(false)
+      }
+    }
+    const onEsc = (e) => {
+      if (e.key === 'Escape') setIsMobileOpen(false)
+    }
+    document.addEventListener('click', onDocClick)
+    document.addEventListener('keydown', onEsc)
+    return () => {
+      document.removeEventListener('click', onDocClick)
+      document.removeEventListener('keydown', onEsc)
+    }
+  }, [])
 
   const handleLogout = () => {
     try {
@@ -17,7 +37,7 @@ export default function NavBar() {
   }
 
   return (
-    <header className="w-full h-16 bg-gradient-to-r from-purple-600 via-indigo-600 to-teal-500 text-white shadow-lg border-b border-white/10">
+    <header className="w-full h-16 bg-linear-to-r from-purple-600 via-indigo-600 to-teal-500 text-white shadow-lg border-b border-white/10">
       <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-full">
           {/* Left Section - Brand & Navigation */}
@@ -77,25 +97,33 @@ export default function NavBar() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-400 to-indigo-500 text-white font-semibold rounded-full">
+                  <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-purple-400 to-indigo-500 text-white font-semibold rounded-full">
                     {user?.username ? user.username[0].toUpperCase() : '?'}
                   </div>
                 )}
               </button>
 
               {/* Mobile Menu Button */}
-              <div className="relative md:hidden">
-                <button className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+              <div className="relative md:hidden" ref={mobileMenuRef}>
+                <button
+                  onClick={() => setIsMobileOpen((s) => !s)}
+                  aria-expanded={isMobileOpen}
+                  aria-label="Open menu"
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
-                
+
                 {/* Mobile Dropdown Menu */}
-                <div className="absolute right-0 top-12 w-48 bg-white/95 backdrop-blur-lg rounded-xl shadow-2xl border border-white/20 py-2 opacity-0 invisible hover:opacity-100 hover:visible transition-all duration-200">
+                <div className={
+                  `absolute right-0 top-12 w-48 bg-white/95 backdrop-blur-lg rounded-xl shadow-2xl border border-white/20 py-2 transform transition-all duration-200 z-50 ` +
+                  (isMobileOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2')
+                }>
                   <button 
                     onClick={() => navigate('/chat')}
-                    className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-purple-50 transition-colors flex items-center gap-3"
+                    className="w-full px-4 py-3 text-left text-sm text-slate-900 hover:bg-purple-50 transition-colors flex items-center gap-3"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -103,7 +131,7 @@ export default function NavBar() {
                     Chats
                   </button>
                   <button 
-                    className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-purple-50 transition-colors flex items-center gap-3"
+                    className="w-full px-4 py-3 text-left text-sm text-slate-900 hover:bg-purple-50 transition-colors flex items-center gap-3"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

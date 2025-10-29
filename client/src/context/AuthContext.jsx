@@ -7,20 +7,37 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const token = localStorage.getItem('token');
-      const storedUser = localStorage.getItem('user');
-      
-      if (token && storedUser) {
-        setUser(JSON.parse(storedUser));
-      } else {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const storedUser = localStorage.getItem('user');
+        
+        if (token && storedUser) {
+          // Parse the stored user data
+          const userData = JSON.parse(storedUser);
+          
+          // You could also validate the token here by making an API call
+          // to your backend's /verify-token endpoint if you have one
+          
+          setUser(userData);
+        } else {
+          // Clear any partial data
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setUser(null);
+        }
+      } catch (error) {
+        // If there's any error parsing the stored data,
+        // clear it to prevent future errors
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setUser(null);
+      } finally {
+        setIsLoading(false);
       }
-    } catch {
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
+    };
+
+    checkAuth();
   }, []);
 
   const login = useCallback((userData) => {
